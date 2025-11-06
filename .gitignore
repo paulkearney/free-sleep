@@ -19,6 +19,9 @@ server/~/free-sleep-database
 !.gitkeep
 app/dist/
 
+server/.env.pod
+server/.env.local
+
 /server/free-sleep-data/*
 
 !.gitkeep

@@ -29,6 +29,14 @@ mv free-sleep-main "$REPO_DIR"
 # (In this script we're already moving it, so there's no leftover)
 # rm -rf free-sleep-main
 
+# Ensure default environment configuration exists
+if [ -f "$SERVER_DIR/.env.pod.sample" ] && [ ! -f "$SERVER_DIR/.env.pod" ]; then
+  cp "$SERVER_DIR/.env.pod.sample" "$SERVER_DIR/.env.pod"
+fi
+if [ -f "$SERVER_DIR/.env.local.sample" ] && [ ! -f "$SERVER_DIR/.env.local" ]; then
+  cp "$SERVER_DIR/.env.local.sample" "$SERVER_DIR/.env.local"
+fi
+
 chown -R "$USERNAME":"$USERNAME" "$REPO_DIR"
 
 # --------------------------------------------------------------------------------

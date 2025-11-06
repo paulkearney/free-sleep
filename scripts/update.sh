@@ -22,7 +22,17 @@ fi
 echo "Attempting to reinstall free-sleep..."
 if /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/throwaway31265/free-sleep/main/scripts/install.sh)"; then
   echo "Reinstall successful."
-   rm -rf "$BACKUP_PATH"
+  if [ -f "$BACKUP_PATH/server/.env.pod" ]; then
+    echo "Restoring existing .env.pod configuration..."
+    cp "$BACKUP_PATH/server/.env.pod" /home/dac/free-sleep/server/.env.pod
+    chown dac:dac /home/dac/free-sleep/server/.env.pod
+  fi
+  if [ -f "$BACKUP_PATH/server/.env.local" ]; then
+    echo "Restoring existing .env.local configuration..."
+    cp "$BACKUP_PATH/server/.env.local" /home/dac/free-sleep/server/.env.local
+    chown dac:dac /home/dac/free-sleep/server/.env.local
+  fi
+  rm -rf "$BACKUP_PATH"
 else
   echo "Reinstall failed. Restoring from backup..."
   rm -rf /home/dac/free-sleep

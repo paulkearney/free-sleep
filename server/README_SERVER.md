@@ -108,6 +108,8 @@ The server is composed of the following key components:
    ```bash
    npm start
    ```
+5. Copy `server/.env.pod.sample` to `server/.env.pod` and adjust deployment-specific values. Pod installs copy this automatically; updates keep your customized file intact.
+6. Copy `server/.env.local.sample` to `server/.env.local` for local development and tweak paths or other settings as needed. The installer seeds this once and future updates preserve your changes.
 
 ---
 
@@ -138,4 +140,3 @@ This project is licensed under the MIT License. See the `LICENSE.md` file for de
 
 ## Acknowledgments
 - Huge thanks to [@bobobo1618](https://github.com/bobobo1618) & their research on how the device is controlled via dac.sock
-
