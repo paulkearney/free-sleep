@@ -109,7 +109,12 @@ The server is composed of the following key components:
    npm start
    ```
 5. Copy `server/.env.pod.sample` to `server/.env.pod` and adjust deployment-specific values. Pod installs copy this automatically; updates keep your customized file intact.
-6. Copy `server/.env.local.sample` to `server/.env.local` for local development and tweak paths or other settings as needed. The installer seeds this once and future updates preserve your changes.
+6. Copy `server/.env.local.sample` (or `.env.dev` if you prefer that naming) to `server/.env.local` for local development and tweak paths or other settings as needed. The installer seeds this once and future updates preserve your changes.
+
+### Environment overrides
+- At runtime the server first looks for matching `.env` files in `/home/dac/` (for example `/home/dac/.env.pod` or `/home/dac/.env.dev`).  
+- If a file exists there it wins, so you can copy the defaults from `server/` into `/home/dac/` and safely customize them without touching the repo or installer.
+- If nothing is found in `/home/dac/` the server falls back to the checked-in files inside `server/`, ensuring you always have sane defaults.
 
 ---
 

@@ -1,3 +1,4 @@
+import './setup/env.js';
 import './instrument.js';
 import express from 'express';
 import schedule from 'node-schedule';
