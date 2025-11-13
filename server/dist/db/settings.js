@@ -1,22 +1,55 @@
 // LowDB, stores the schedules in /persistent/free-sleep-data/lowdb/settingsDB.json
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="b60762cb-1150-5f13-a600-7a11b5ffbad5")}catch(e){}}();
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof globalThis?globalThis:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="0261ea34-41c4-5b3f-832d-760b82ced4c3")}catch(e){}}();
 import _ from 'lodash';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
 import config from '../config.js';
+const defaultSideSettings = {
+    name: 'Side',
+    awayMode: false,
+    scheduleOverrides: {
+        temperatureSchedules: {
+            disabled: false,
+            expiresAt: ''
+        },
+        alarm: {
+            disabled: false,
+            timeOverride: '',
+            expiresAt: '',
+        }
+    },
+    taps: {
+        doubleTap: {
+            type: 'temperature',
+            change: 'decrement',
+            amount: 1,
+        },
+        tripleTap: {
+            type: 'temperature',
+            change: 'increment',
+            amount: 1,
+        },
+        quadTap: {
+            type: 'alarm',
+            behavior: 'dismiss',
+            snoozeDuration: 60,
+            inactiveAlarmBehavior: 'power',
+        },
+    }
+};
 const defaultData = {
     id: crypto.randomUUID(),
-    timeZone: null,
+    timeZone: 'UTC',
     temperatureFormat: 'fahrenheit',
     rebootDaily: true,
     left: {
+        ..._.cloneDeep(defaultSideSettings),
         name: 'Left',
-        awayMode: false,
     },
     right: {
+        ..._.cloneDeep(defaultSideSettings),
         name: 'Right',
-        awayMode: false,
     },
     primePodDaily: {
         enabled: false,
@@ -31,4 +64,4 @@ settingsDB.data = _.merge({}, defaultData, settingsDB.data);
 await settingsDB.write();
 export default settingsDB;
 //# sourceMappingURL=settings.js.map
-//# debugId=b60762cb-1150-5f13-a600-7a11b5ffbad5
+//# debugId=0261ea34-41c4-5b3f-832d-760b82ced4c3

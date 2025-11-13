@@ -25,9 +25,6 @@ echo "Setting up the installation directory..."
 rm -rf "$REPO_DIR"
 mv free-sleep-main "$REPO_DIR"
 
-# Optional: remove the leftover free-sleep-main directory if the `unzip` created extra files
-# (In this script we're already moving it, so there's no leftover)
-# rm -rf free-sleep-main
 
 # Ensure default environment configuration exists
 if [ -f "$SERVER_DIR/.env.pod.sample" ] && [ ! -f "$SERVER_DIR/.env.pod" ]; then
@@ -65,8 +62,32 @@ sudo -u "$USERNAME" bash -c "source /home/$USERNAME/.profile && volta install no
 mkdir -p /persistent/free-sleep-data/logs/
 mkdir -p /persistent/free-sleep-data/lowdb/
 
+SRC_FILE="/opt/eight/bin/frank.sh"
+DEST_FILE="/persistent/free-sleep-data/dac_sock_path.txt"
+
+if [ -f "$DEST_FILE" ]; then
+  echo "Destination file $DEST_FILE already exists, skipping."
+  exit 0
+fi
+
+if [ -r "$SRC_FILE" ]; then
+  echo "Found $SRC_FILE, searching for dac.sock path..."
+  result=$(grep -oP '(?<=DAC_SOCKET=)[^ ]*dac\.sock' "$SRC_FILE" || true)
+  if [ -n "$result" ]; then
+    echo "$result" > "$DEST_FILE"
+    echo "DAC socket path saved to $DEST_FILE"
+  else
+    echo "No dac.sock path found in $SRC_FILE, skipping write."
+  fi
+else
+  echo "File $SRC_FILE not found or not readable, skipping."
+fi
+
 # Extract the DAC_SOCKET path from frank.sh (if present) and put it in DAC_SOCK_PATH file
-grep -oP '(?<=DAC_SOCKET=)[^ ]*dac.sock' /opt/eight/bin/frank.sh > /persistent/free-sleep-data/dac_sock_path.txt
+DAC_SOCK_PATH="/persistent/free-sleep-data/dac_sock_path.txt"
+if [ ! -s "$DAC_SOCK_PATH" ]; then
+  grep -oP '(?<=DAC_SOCKET=)[^ ]*dac.sock' /opt/eight/bin/frank.sh > "$DAC_SOCK_PATH"
+fi
 
 # DO NOT REMOVE, OLD VERSIONS WILL LOSE settings & schedules
 FILES_TO_MOVE=(

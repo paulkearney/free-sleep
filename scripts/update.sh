@@ -6,6 +6,7 @@ set -e
 # Name of the backup folder with a timestamp
 
 BACKUP_PATH="/home/dac/free-sleep-backup"
+APP_DIR="/home/dac/free-sleep"
 
 systemctl stop free-sleep
 systemctl disable free-sleep
@@ -22,17 +23,15 @@ fi
 echo "Attempting to reinstall free-sleep..."
 if /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/throwaway31265/free-sleep/main/scripts/install.sh)"; then
   echo "Reinstall successful."
-  if [ -f "$BACKUP_PATH/server/.env.pod" ]; then
-    echo "Restoring existing .env.pod configuration..."
-    cp "$BACKUP_PATH/server/.env.pod" /home/dac/free-sleep/server/.env.pod
-    chown dac:dac /home/dac/free-sleep/server/.env.pod
-  fi
-  if [ -f "$BACKUP_PATH/server/.env.local" ]; then
-    echo "Restoring existing .env.local configuration..."
-    cp "$BACKUP_PATH/server/.env.local" /home/dac/free-sleep/server/.env.local
-    chown dac:dac /home/dac/free-sleep/server/.env.local
-  fi
+
   rm -rf "$BACKUP_PATH"
+  if [ -d "$APP_DIR" ]; then
+    rm -rf "$BACKUP_PATH"
+  else
+    echo "Install path missing after installer; restoring backup..."
+    rm -rf "$APP_DIR"
+    mv "$BACKUP_PATH" "$APP_DIR"
+  fi
 else
   echo "Reinstall failed. Restoring from backup..."
   rm -rf /home/dac/free-sleep
@@ -40,6 +39,9 @@ else
   systemctl enable free-sleep
   systemctl start free-sleep
 fi
+
+systemctl enable free-sleep || true
+systemctl start free-sleep || true
 
 # Block internet access again
 sh /home/dac/free-sleep/scripts/block_internet_access.sh
